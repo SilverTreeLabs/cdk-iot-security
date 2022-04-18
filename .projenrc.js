@@ -79,6 +79,7 @@ const commonExclude = [
   'cdk.out',
   'cdk.context.json',
   'yarn-error.log',
+  'src/demo/**/*.pem',
 ];
 
 project.npmignore.exclude(...commonExclude);

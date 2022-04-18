@@ -1,4 +1,4 @@
-import { pki, md } from 'node-forge';
+import { pki, md, random, util } from 'node-forge';
 
 export class CertificateGenerator {
 
@@ -65,10 +65,15 @@ export class CertificateGenerator {
       this.formattedSubjects(csrSubjects),
       years,
     );
-    const deviceCertificateSet: CertificateGenerator.CertificateSet = {
+
+    // Also generate a symmetric key of 16 bytes (128 bits)
+    const symmetricKey64 = util.encode64(random.getBytesSync(16))
+
+    const deviceCertificateSet: CertificateGenerator.DeviceCertificateSet = {
       publicKey: pki.publicKeyToPem(deviceKeys.publicKey),
       privateKey: pki.privateKeyToPem(deviceKeys.privateKey),
       certificate: pki.certificateToPem(deviceCertificate),
+      symmetricKey64,
     };
     return deviceCertificateSet;
   }
@@ -228,5 +233,9 @@ export namespace CertificateGenerator {
     publicKey: string;
     privateKey: string;
     certificate: string;
+  }
+
+  export interface DeviceCertificateSet extends CertificateSet {
+    symmetricKey64: string; // A 128 bit random key b64 encoded
   }
 }

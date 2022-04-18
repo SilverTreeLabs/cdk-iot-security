@@ -99,7 +99,7 @@ describe('Call function getCaRegistrationCertificates without CSR subjects', () 
 
 describe('Call function getDeviceRegistrationCertificates', () => {
   let caCertificates: cg.CaRegistrationRequiredCertificates;
-  let deviceCertificates: cg.CertificateSet;
+  let deviceCertificates: cg.DeviceCertificateSet;
   let deviceCsrSubject: cg.CsrSubjects = {
     commonName: 'test_thing_name',
   };
@@ -113,6 +113,8 @@ describe('Call function getDeviceRegistrationCertificates', () => {
     var caCert = forge.pki.certificateFromPem(caCertificates.ca.certificate);
     var deviceCert = forge.pki.certificateFromPem(deviceCertificates.certificate);
     expect(caCert.verify(deviceCert)).toBe(true);
+    expect(deviceCertificates.symmetricKey64).toBeTruthy
+    expect(Buffer.from(deviceCertificates.symmetricKey64, 'base64')).toHaveLength(16)
   });
 
   test('Device certificate with custom subjects and time interval', () => {
